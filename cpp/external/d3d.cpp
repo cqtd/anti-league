@@ -88,34 +88,34 @@ namespace core {
 				get_fps(&renderer::FPS);
 
 				//Render
-				renderer::DrawComponent(pDevice);
-				renderer::DrawStat(pDevice);
+				renderer::draw_component(pDevice);
+				renderer::draw_stat(pDevice);
 
 				if (renderer::showMenu)
-					renderer::DrawMenu(pDevice);
+					renderer::draw_menu(pDevice);
 			}
 
 			pDevice->EndScene();
 			pDevice->PresentEx(nullptr, nullptr, nullptr, nullptr, 0);
 		}
 
-		void draw_string(float x, float y, const char* text, ImColor color, bool outlined, EUIFlag flag)
+		void draw_string(float x, float y, const char* text, ImColor color, bool outlined, eUserInterfaceFlag flag)
 		{
 			RECT rPosition;
 
 			ID3DXFont* pFont;
 			switch (flag)
 			{
-			case EUIFlag::UI_Large:
+			case eUserInterfaceFlag::UI_Large:
 				pFont = pFontUILarge;
 				break;
-			case EUIFlag::UI_Small:
+			case eUserInterfaceFlag::UI_Small:
 				pFont = pFontUISmall;
 				break;
-			case EUIFlag::Visual_Large:
+			case eUserInterfaceFlag::Visual_Large:
 				pFont = pFontVisualsLarge;
 				break;
-			case EUIFlag::Visual_Small:
+			case eUserInterfaceFlag::Visual_Small:
 				pFont = pFontVisualsSmall;
 				break;
 
@@ -306,8 +306,8 @@ namespace core {
 				const auto X2 = cos(a + Step) * radius + X;
 				const auto Y2 = sin(a + Step) * radius + Y;
 
-				Vector3f p1 = renderer::WorldToScreen({ X1, Y1, Z });
-				Vector3f p2 = renderer::WorldToScreen({ X2, Y2, Z });
+				Vector3f p1 = renderer::world_to_screen({ X1, Y1, Z });
+				Vector3f p2 = renderer::world_to_screen({ X2, Y2, Z });
 
 				//W2S(new Vector3f(X1, Y1, Z), &p1);
 				//W2S(new Vector3f(X2, Y2, Z), &p2);

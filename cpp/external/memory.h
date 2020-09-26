@@ -15,16 +15,18 @@ namespace core {
 
 		void init(HANDLE handle);
 
-		void SetBase(DWORD);
-		DWORD GetBase();
+		void set_base(DWORD);
+		DWORD get_base();
+		
+		DWORD read(DWORD address);
+		D3DXMATRIX read_matrix(DWORD address);
 
 		float ReadFloat(DWORD address);
 		int ReadInt(DWORD address);
-		DWORD Read(DWORD address);
 		bool ReadBool(DWORD address);
-		char* ReadString(DWORD address);
-		D3DXMATRIX ReadMatrix(DWORD address);
+		
 		char* ReadText(int address);
+		char* ReadString(DWORD address);
 	};
 }
 

@@ -12,12 +12,12 @@ namespace core {
 			hGame = handle;
 		}
 
-		void SetBase(DWORD address)
+		void set_base(DWORD address)
 		{
 			baseAddress = address;
 		}
 
-		DWORD GetBase()
+		DWORD get_base()
 		{
 			return baseAddress;
 		}
@@ -50,7 +50,7 @@ namespace core {
 			return 0;
 		}
 
-		DWORD Read(DWORD address)
+		DWORD read(DWORD address)
 		{
 			DWORD out;
 			auto success = ReadProcessMemory(hGame, (LPCVOID)address, &out, sizeof(DWORD), nullptr);
@@ -99,7 +99,7 @@ namespace core {
 			return *out;
 		}
 
-		D3DXMATRIX ReadMatrix(DWORD address)
+		D3DXMATRIX read_matrix(DWORD address)
 		{
 			D3DXMATRIX matrix;
 			SIZE_T read;

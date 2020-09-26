@@ -41,16 +41,24 @@ namespace core {
 		extern bool bIsInitialized;
 		extern char buffer[256];
 
-		void PrintStat(const char*, ...);
-		void DrawStat(IDirect3DDevice9* pDevice);
-		void DrawComponent(IDirect3DDevice9* pDevice);
-		void DrawMenu(IDirect3DDevice9* pDevice);
+		void set_resolution(const int width, const int height);
+		void set_width(const int width);
+		int get_width();
 
-		D3DXMATRIX GetViewProjectionMatrix();
-		D3DXMATRIX GetViewMatrix();
-		D3DXMATRIX GetProjectionMatrix();
-		Vector3f GetScreenResolution();
-		Vector3f WorldToScreen(Vector3f pos);
+		void set_height(const int height);
+		int get_height();
+
+		void print(const char*, ...);
+
+		void draw_stat(IDirect3DDevice9* pDevice);
+		void draw_component(IDirect3DDevice9* pDevice);
+		void draw_menu(IDirect3DDevice9* pDevice);
+
+		D3DXMATRIX get_view_projection_matrix();
+		D3DXMATRIX get_view_matrix();
+		D3DXMATRIX get_projection_matrix();
+		Vector3f get_screen_resolution();
+		Vector3f world_to_screen(Vector3f pos);
 
 		
 	};

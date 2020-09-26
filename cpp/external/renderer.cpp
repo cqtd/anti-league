@@ -2,74 +2,93 @@
 #include "renderer.h"
 #include <cstdio>
 
-namespace core {
+namespace core
+{
 	namespace renderer
 	{
-		 bool showMenu = false;
+		using namespace std;
 
-		 int FPS = 0;
-		 int width = 0;
-		 int height = 0;
+		bool showMenu = false;
 
-		 HWND tWindow = nullptr;
-		 HWND hWindow = nullptr;
-		 HWND hMessage = nullptr;
+		int FPS = 0;
+		int width = 0;
+		int height = 0;
 
-		 RECT wSize;
+		HWND tWindow = nullptr;
+		HWND hWindow = nullptr;
+		HWND hMessage = nullptr;
 
-		 DWORD base = 0x0;
+		RECT wSize;
 
-		 D3DXMATRIX viewMatrix;
+		DWORD base = 0x0;
 
-		 float color[3];
+		D3DXMATRIX viewMatrix;
 
-		 float statX;
-		 float statY;
+		float color[3];
 
-		 bool drawMinionLine = true;
-		 bool drawMinionLastHit = true;
-		 bool drawChampionLine = false;
-		 bool drawFPS = true;
-		 bool drawStat = false;
+		float statX;
+		float statY;
 
-		 bool bIsInitialized = false;
-		 char buffer[256];
-		
-		void PrintStat(const char* fmt, ...)
+		bool drawMinionLine = true;
+		bool drawMinionLastHit = true;
+		bool drawChampionLine = false;
+		bool drawFPS = true;
+		bool drawStat = false;
+
+		bool bIsInitialized = false;
+		char buffer[256];
+
+		void set_resolution(const int width, const int height)
+		{
+			set_width(width);
+			set_height(height);
+
+			cout << "Resolution : " << width << "x" << "height" << endl;
+		}
+
+		void set_width(const int width)
+		{
+			core::renderer::width = width;
+		}
+
+		int get_width()
+		{
+			return width;
+		}
+
+		void set_height(const int height)
+		{
+			core::renderer::height = height;
+		}
+
+		int get_height()
+		{
+			return height;
+		}
+
+		void print(const char* fmt, ...)
 		{
 			va_list argList;
 			va_start(argList, fmt);
 			vsprintf_s(buffer, fmt, argList);
 			va_end(argList);
 
-			d3d::draw_string(statX, statY, buffer, ImColor(255, 255, 255), true, d3d::EUIFlag::UI_Large);
+			d3d::draw_string(statX, statY, buffer, ImColor(255, 255, 255), true, d3d::eUserInterfaceFlag::UI_Large);
 			statY += 20;
 		}
 
-		void DrawStat(IDirect3DDevice9* pDevice)
+		void draw_stat(IDirect3DDevice9* pDevice)
 		{
 			statX = 20;
 			statY = 20;
 
 			if (drawFPS)
 			{
-				PrintStat("FPS : %d", FPS);
+				print("FPS : %d", FPS);
 			}
-
-			//if (drawStat)
-			//{
-			//	const auto screenPos = WorldToScreen(object::CObject::GetPosition(object::ObjectManager::LocalPlayer));
-			//	PrintStat("POS : (%d, %d)", (int)screenPos.X, (int)screenPos.Y);
-
-			//	PrintStat("Range : %d", (int)object::CObject::GetAttackRange(object::ObjectManager::LocalPlayer));
-			//}
-
-			//PrintStat("Target : %d, %s", target->target, object::ObjAIBase::GetChampionName(target->target));
-			//PrintStat("ForceTarget : %d", target->forceTarget);
-			//PrintStat("LMouseButton : %b", target->LMouseButtonDown);
 		}
 
-		void DrawComponent(IDirect3DDevice9* pDevice)
+		void draw_component(IDirect3DDevice9* pDevice)
 		{
 			//if (drawMinionLine)
 			//{
@@ -133,7 +152,7 @@ namespace core {
 		}
 
 
-		void DrawMenu(IDirect3DDevice9* pDevice)
+		void draw_menu(IDirect3DDevice9* pDevice)
 		{
 			const auto colors = ImGui::GetStyle().Colors;
 
@@ -148,7 +167,7 @@ namespace core {
 			if (!bIsInitialized)
 				ImGui::SetNextWindowSize(ImVec2(400, 800));
 
-			ImGui::Begin("Jaby.zip | al | Version 10.19.335.4706 [PUBLIC]");
+			ImGui::Begin("10.19.335.4706 [PUBLIC]");
 
 			if (ImGui::BeginChild("ESP", ImVec2(380, 100), true))
 			{
@@ -167,40 +186,30 @@ namespace core {
 			bIsInitialized = true;
 		}
 
-		D3DXMATRIX GetViewProjectionMatrix()
+		D3DXMATRIX get_view_projection_matrix()
 		{
-			return GetViewMatrix() * GetProjectionMatrix();
+			return get_view_matrix() * get_projection_matrix();
 		}
 
-		D3DXMATRIX GetViewMatrix()
+		D3DXMATRIX get_view_matrix()
 		{
-			return memory::ReadMatrix(memory::GetBase() + offset::instance::ViewMatrix);
+			return memory::read_matrix(memory::get_base() + offset::instance::ViewMatrix);
 		}
 
-		D3DXMATRIX GetProjectionMatrix()
+		D3DXMATRIX get_projection_matrix()
 		{
-			return memory::ReadMatrix(memory::GetBase() + offset::instance::ViewMatrix + 0x40);
+			return memory::read_matrix(memory::get_base() + offset::instance::ViewMatrix + 0x40);
 		}
 
-		Vector3f GetScreenResolution()
+		Vector3f get_screen_resolution()
 		{
-			//int instance;
-			//
-			//Memory::ReadInt(Memory::baseAddress + Offset::Game::ViewMatrix, &instance);
-
-			//int xx, yy;
-			//
-			//Memory::ReadInt(instance + ADDR_WIDTH, &xx);
-			//Memory::ReadInt(instance + ADDR_HEIGHT, &yy);
-
-			return { (float)width, (float)height, 0 };
-			//return {(float)2560, (float)1440, 0};
+			return {static_cast<float>(width), static_cast<float>(height), 0};
 		}
 
-		Vector3f WorldToScreen(Vector3f pos)
+		Vector3f world_to_screen(Vector3f pos)
 		{
-			const auto screen = GetScreenResolution();
-			auto matrix = GetViewProjectionMatrix();
+			const auto screen = get_screen_resolution();
+			auto matrix = get_view_projection_matrix();
 
 			D3DXVECTOR4 clipCoords;
 			clipCoords.x = pos.X * matrix[0] + pos.Y * matrix[4] + pos.Z * matrix[8] + matrix[12];
@@ -208,7 +217,7 @@ namespace core {
 			clipCoords.z = pos.X * matrix[2] + pos.Y * matrix[6] + pos.Z * matrix[10] + matrix[14];
 			clipCoords.w = pos.X * matrix[3] + pos.Y * matrix[7] + pos.Z * matrix[11] + matrix[15];
 
-			if (clipCoords[3] < 0.1f) return { 0, 0, 0 };
+			if (clipCoords[3] < 0.1f) return {0, 0, 0};
 
 			Vector3f M;
 			M.X = clipCoords.x / clipCoords.w;
@@ -218,7 +227,7 @@ namespace core {
 			const auto xx = (screen.X / 2 * M.X) + (M.X + screen.X / 2);
 			const auto yy = -(screen.Y / 2 * M.Y) + (M.Y + screen.Y / 2);
 
-			return { xx, yy, 0 };
+			return {xx, yy, 0};
 		}
 	}
 }

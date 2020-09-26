@@ -8,7 +8,7 @@ namespace core {
 	
 	namespace d3d
 	{
-		enum class EUIFlag
+		enum class eUserInterfaceFlag
 		{
 			UI_Large,
 			UI_Small,
@@ -40,7 +40,7 @@ namespace core {
 			
 			ImColor color = ImColor(255, 255, 255), 
 			bool outlined = false, 
-			EUIFlag flag = EUIFlag::UI_Small
+			eUserInterfaceFlag flag = eUserInterfaceFlag::UI_Small
 		);
 		
 		void draw_string_outlined(

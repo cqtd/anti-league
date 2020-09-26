@@ -1,3 +1,6 @@
+#ifndef _OFFSET_HPP_
+#define _OFFSET_HPP_
+
 #pragma once
 
 #define OFFSET(NAME, OFFSET) constexpr unsigned long NAME = OFFSET
@@ -49,7 +52,7 @@ namespace offset
 		OFFSET(ChampionName, 0x312C);
 	}
 
-#ifdef _EXTERNAL
+#ifdef _INTERNAL
 
 	namespace function
 	{
@@ -64,4 +67,10 @@ namespace offset
 	}
 	
 #endif
+
+#ifdef _EXTERNAL
+
+#endif
 }
+
+#endif

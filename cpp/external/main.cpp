@@ -1,5 +1,4 @@
 #include "main.h"
-#include <thread>
 
 using namespace core;
 
@@ -62,7 +61,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 	// 오버레이 윈도우 초기화
-	renderer::hWindow = InitWindow((HINSTANCE)hInstance);
+	renderer::hWindow = init_window((HINSTANCE)hInstance);
 	d3d::init(renderer::hWindow);
 
 	// 윈도우 초기화 실패시 종료
@@ -77,17 +76,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	ShowWindow(renderer::hWindow, SW_SHOW);
 	bInitialized = TRUE;
 
-	// 챔피언 리스트 캐시
-	//object::ObjectManager::init();
-	//component::ComponentBase::Event_OnStart();
-
 	// Thread 생성
-	hUpdate = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)loop::update, nullptr, 0, nullptr);
-	hLate = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)loop::late_update, nullptr, 0, nullptr);
-	hFixed = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)loop::fixed_update, nullptr, 0, nullptr);
+	hUpdate = CreateThread(nullptr, 0,(LPTHREAD_START_ROUTINE)(loop::update), nullptr, 0, nullptr);
+	hLate = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)(loop::late_update), nullptr, 0, nullptr);
+	hFixed = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)(loop::fixed_update), nullptr, 0, nullptr);
 
 	// Window 업데이트 스레드
-	CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)update_window, nullptr, 0, nullptr);
+	CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)(update_window), nullptr, 0, nullptr);
 
 	// 로드된 상태
 	while (!bIsUnloading)
@@ -108,32 +103,30 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// 윈도우 끄기
 	DestroyWindow(renderer::hWindow);
-	UnregisterClassA(script_title, (HINSTANCE)hInstance);
-	FreeLibraryAndExitThread((HMODULE)hInstance, 0);
-
-	return 0;
+	UnregisterClassA(script_title, static_cast<HINSTANCE>(hInstance));
+	FreeLibraryAndExitThread(static_cast<HMODULE>(hInstance), 0);
 }
 
 void update_window()
 {
 	while (!bIsUnloading)
 	{
-		const auto hWindow = FindWindowA(nullptr, target_window_caption);
+		auto* const h_window = FindWindowA(nullptr, target_window_caption);
 
 		// escape routine
-		if (!hWindow && renderer::hWindow && !bIsUnloading)
+		if (!h_window && renderer::hWindow && !bIsUnloading)
 		{
 			ShowWindow(renderer::hWindow, SW_HIDE);
 			bIsUnloading = TRUE;
 		}
 
-		if (hWindow)
+		if (h_window)
 		{
-			GetWindowRect(hWindow, &renderer::wSize);
+			GetWindowRect(h_window, &renderer::wSize);
 			renderer::width = renderer::wSize.right - renderer::wSize.left;
 			renderer::height = renderer::wSize.bottom - renderer::wSize.top;
 
-			const DWORD style_flag = GetWindowLong(hWindow, GWL_STYLE);
+			const DWORD style_flag = GetWindowLong(h_window, GWL_STYLE);
 
 			if (style_flag & WS_BORDER)
 			{
@@ -152,7 +145,7 @@ void update_window()
 	}
 }
 
-HWND WINAPI InitWindow(HINSTANCE hInstance)
+HWND WINAPI init_window(HINSTANCE hInstance)
 {
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.cbClsExtra = NULL;
@@ -160,9 +153,9 @@ HWND WINAPI InitWindow(HINSTANCE hInstance)
 	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wcex.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
 	wcex.hIconSm = LoadIcon(nullptr, IDI_APPLICATION);
-	wcex.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(0, 0, 0));
+	wcex.hbrBackground = static_cast<HBRUSH>(CreateSolidBrush(RGB(0, 0, 0)));
 	wcex.hInstance = hInst;
-	wcex.lpfnWndProc = WndProc;
+	wcex.lpfnWndProc = window_proc_callback;
 	wcex.lpszClassName = script_title;
 	wcex.lpszMenuName = script_title;
 	wcex.style = CS_VREDRAW | CS_HREDRAW;
@@ -182,13 +175,13 @@ HWND WINAPI InitWindow(HINSTANCE hInstance)
 	return renderer::hWindow;
 }
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK window_proc_callback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
 	case WM_CREATE:
 
-		DwmExtendFrameIntoClientArea(hWnd, &MARGIN);
+		DwmExtendFrameIntoClientArea(hWnd, &margins);
 		break;
 
 	case WM_PAINT:
@@ -206,12 +199,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		PostQuitMessage(1);
 		exit(0);
-		break;
 
 	default:
 		ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
 		return DefWindowProc(hWnd, message, wParam, lParam);
-		break;
 	}
 
 	return 0;

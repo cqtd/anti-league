@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "DHb+eAbSji1Bx7FK6bMmWMsC/YXC1MS5NSOn8sSVDRvaq7azYItdjJZo7bRF9UrVYMLQm+YBhOdEWb3Y/cH+Ig==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\kimke\\source\\repos\\anti-league\\shared.net\\shared.net.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\kimke\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\kimke\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

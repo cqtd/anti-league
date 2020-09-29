@@ -4,6 +4,7 @@
 #pragma once
 
 #include <dwmapi.h>
+#include <thread>
 
 #pragma comment(lib, "dwmapi.lib")
 #pragma comment(lib, "d3d9.lib")

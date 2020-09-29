@@ -22,7 +22,7 @@ BOOL                bIsUnloading    = FALSE;
 BOOL                bInitialized    = FALSE;
 
 WNDCLASSEXA         wcex;
-MARGINS             MARGIN          = { 0, 0, renderer::width, renderer::height };
+MARGINS             margins          = { 0, 0, renderer::width, renderer::height };
 
 FILE*               stream;
 
@@ -50,7 +50,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 /// <param name="wParam"></param>
 /// <param name="lParam"></param>
 /// <returns></returns>
-LRESULT CALLBACK WndProc(HWND hWnd,
+LRESULT CALLBACK window_proc_callback(HWND hWnd,
     UINT message,
     WPARAM wParam,
     LPARAM lParam
@@ -61,7 +61,7 @@ LRESULT CALLBACK WndProc(HWND hWnd,
 /// </summary>
 /// <param name="hInstance"></param>
 /// <returns></returns>
-HWND WINAPI InitWindow(HINSTANCE hInstance);
+HWND WINAPI init_window(HINSTANCE hInstance);
 
 /// <summary>
 /// Updates dx9 render window for each 2 milliseconds.
